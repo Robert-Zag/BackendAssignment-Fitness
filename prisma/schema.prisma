@@ -7,6 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ExerciseDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  role     UserRole @default(USER)
+  name     String?
+  surname  String?
+  nickName String?
+  age      Int?
+}
+
 model Exercise {
   id         Int                 @id @default(autoincrement())
   difficulty ExerciseDifficulty?
@@ -25,10 +47,4 @@ model Program {
   updatedAt DateTime   @default(now()) @db.Timestamptz(6)
   deletedAt DateTime?  @db.Timestamptz(6)
   exercises Exercise[]
-}
-
-enum ExerciseDifficulty {
-  EASY
-  MEDIUM
-  HARD
 }
