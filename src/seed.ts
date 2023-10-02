@@ -1,8 +1,8 @@
-import { enum_exercises_difficulty } from "@prisma/client"
+import { ExerciseDifficulty } from '@prisma/client';
 import { prisma } from "./lib/prisma"
 
 const seedDB = async () => {
-	await prisma.programs.createMany({
+	await prisma.program.createMany({
 		data: [
 			{ name: 'Program 1' },
 			{ name: 'Program 2' },
@@ -10,30 +10,30 @@ const seedDB = async () => {
 		]
 	})
 
-	await prisma.exercises.createMany({
+	await prisma.exercise.createMany({
 		data: [{
 			name: 'Exercise 1',
-			difficulty: enum_exercises_difficulty.EASY,
+			difficulty: ExerciseDifficulty.EASY,
 			programID: 1
 		}, {
 			name: 'Exercise 2',
-			difficulty: enum_exercises_difficulty.EASY,
+			difficulty: ExerciseDifficulty.EASY,
 			programID: 2
 		}, {
 			name: 'Exercise 3',
-			difficulty: enum_exercises_difficulty.MEDIUM,
+			difficulty: ExerciseDifficulty.MEDIUM,
 			programID: 1
 		}, {
 			name: 'Exercise 4',
-			difficulty: enum_exercises_difficulty.MEDIUM,
+			difficulty: ExerciseDifficulty.MEDIUM,
 			programID: 2
 		}, {
 			name: 'Exercise 5',
-			difficulty: enum_exercises_difficulty.HARD,
+			difficulty: ExerciseDifficulty.HARD,
 			programID: 1
 		}, {
 			name: 'Exercise 6',
-			difficulty: enum_exercises_difficulty.HARD,
+			difficulty: ExerciseDifficulty.HARD,
 			programID: 2
 		}]
 	})

@@ -1,22 +1,11 @@
 import { Router, Request, Response, NextFunction } from 'express'
-
-import { models } from '../db'
+import { prisma } from '../lib/prisma'
 
 const router: Router = Router()
 
-const {
-	Exercise,
-	Program
-} = models
-
 export default () => {
 	router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
-		const exercises = await Exercise.findAll({
-			include: [{
-				model: Program,
-				as: 'program'
-			}]
-		})
+		const exercises = await prisma.exercise.findMany({ include: { programs: true } })
 
 		return res.json({
 			data: exercises,
@@ -26,3 +15,4 @@ export default () => {
 
 	return router
 }
+
