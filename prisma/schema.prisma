@@ -7,27 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model exercises {
-  id         Int                        @id @default(autoincrement())
-  difficulty enum_exercises_difficulty?
-  name       String?                    @db.VarChar(200)
-  createdAt  DateTime                   @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime                   @default(now()) @db.Timestamptz(6)
-  deletedAt  DateTime?                  @db.Timestamptz(6)
+model Exercise {
+  id         Int                 @id @default(autoincrement())
+  difficulty ExerciseDifficulty?
+  name       String?             @db.VarChar(200)
+  createdAt  DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime            @default(now()) @db.Timestamptz(6)
+  deletedAt  DateTime?           @db.Timestamptz(6)
   programID  Int
-  programs   programs                   @relation(fields: [programID], references: [id], onDelete: NoAction)
+  programs   Program             @relation(fields: [programID], references: [id], onDelete: NoAction)
 }
 
-model programs {
-  id        Int         @id @default(autoincrement())
-  name      String?     @db.VarChar(200)
-  createdAt DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
-  deletedAt DateTime?   @db.Timestamptz(6)
-  exercises exercises[]
+model Program {
+  id        Int        @id @default(autoincrement())
+  name      String?    @db.VarChar(200)
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime?  @db.Timestamptz(6)
+  exercises Exercise[]
 }
 
-enum enum_exercises_difficulty {
+enum ExerciseDifficulty {
   EASY
   MEDIUM
   HARD
