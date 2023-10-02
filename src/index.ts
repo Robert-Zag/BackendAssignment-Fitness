@@ -1,14 +1,13 @@
 import http from 'http'
 import express from 'express'
-import * as bodyParser from 'body-parser'
 
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
 
 const app = express()
 
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 
