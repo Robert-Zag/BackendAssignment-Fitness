@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model exercises {
+  id         BigInt                     @id @default(autoincrement())
+  difficulty enum_exercises_difficulty?
+  name       String?                    @db.VarChar(200)
+  createdAt  DateTime                   @db.Timestamptz(6)
+  updatedAt  DateTime                   @db.Timestamptz(6)
+  deletedAt  DateTime?                  @db.Timestamptz(6)
+  programID  BigInt
+  programs   programs                   @relation(fields: [programID], references: [id], onDelete: NoAction)
+}
+
+model programs {
+  id        BigInt      @id @default(autoincrement())
+  name      String?     @db.VarChar(200)
+  createdAt DateTime    @db.Timestamptz(6)
+  updatedAt DateTime    @db.Timestamptz(6)
+  deletedAt DateTime?   @db.Timestamptz(6)
+  exercises exercises[]
+}
+
+enum enum_exercises_difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
