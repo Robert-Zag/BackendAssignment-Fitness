@@ -11,8 +11,8 @@ model exercises {
   id         BigInt                     @id @default(autoincrement())
   difficulty enum_exercises_difficulty?
   name       String?                    @db.VarChar(200)
-  createdAt  DateTime                   @db.Timestamptz(6)
-  updatedAt  DateTime                   @db.Timestamptz(6)
+  createdAt  DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime                   @default(now()) @db.Timestamptz(6)
   deletedAt  DateTime?                  @db.Timestamptz(6)
   programID  BigInt
   programs   programs                   @relation(fields: [programID], references: [id], onDelete: NoAction)
@@ -21,8 +21,8 @@ model exercises {
 model programs {
   id        BigInt      @id @default(autoincrement())
   name      String?     @db.VarChar(200)
-  createdAt DateTime    @db.Timestamptz(6)
-  updatedAt DateTime    @db.Timestamptz(6)
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
   deletedAt DateTime?   @db.Timestamptz(6)
   exercises exercises[]
 }
