@@ -44,7 +44,7 @@ export default () => {
         const user = await prisma.user.create({
             data: {
                 ...parsedData,
-                email: parsedData.email!,
+                email: parsedData.email!.toLowerCase(),
                 password
             }
         })
