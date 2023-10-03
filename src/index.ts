@@ -6,8 +6,7 @@ import dotenv from 'dotenv'
 
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
-import RegisterRouter from './routes/register'
-import LoginRouter from './routes/login'
+import AuthRouter from './routes/auth'
 
 
 dotenv.config()
@@ -20,8 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
-app.use('/register', RegisterRouter())
-app.use('/login', LoginRouter())
+app.use('/auth', AuthRouter())
 
 const httpServer = http.createServer(app)
 
