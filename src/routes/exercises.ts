@@ -112,7 +112,7 @@ export default () => {
 		// disconnecting all the existing exercise program relations if a programs property was passed
 		if (parsedData.hasOwnProperty('programs')) {
 			const currentlyConnectedPrograms = existingExercise.programs.map((program) => { return { id: program.id } })
-			await prisma.exercise.update({
+			const disconnectPrograms = prisma.exercise.update({
 				where: { id },
 				data: {
 					programs: {
@@ -120,23 +120,40 @@ export default () => {
 					}
 				}
 			})
-		}
 
-		const programsToConnect = parsedData.programs && parsedData.programs.map((id) => { return { id } })
-		const exercise = await prisma.exercise.update({
-			where: { id },
-			data: {
-				...parsedData,
-				programs: {
-					connect: programsToConnect
+			const programsToConnect = parsedData.programs && parsedData.programs.map((id) => { return { id } })
+			const updateExercise = prisma.exercise.update({
+				where: { id },
+				data: {
+					...parsedData,
+					programs: {
+						connect: programsToConnect
+					}
 				}
-			}
-		})
+			})
 
-		return res.json({
-			exercise,
-			message: 'Exercise updated'
-		})
+			// make an atomic transaction to avoid risk of data loss
+			const results = await prisma.$transaction([disconnectPrograms, updateExercise])
+
+			return res.json({
+				exercise: results[1],
+				message: 'Exercise updated'
+			})
+			// if no programs property is passed in request body, update the other properties only 
+		} else {
+			const exercise = await prisma.exercise.update({
+				where: { id },
+				data: {
+					...parsedData,
+					programs: undefined
+				}
+			});
+
+			return res.json({
+				exercise,
+				message: 'Exercise updated'
+			});
+		}
 	})
 
 	router.delete('/:id', isAuthenticated, isAdmin, async (req: Request, res: Response, _next: NextFunction) => {
