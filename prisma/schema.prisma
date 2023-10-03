@@ -36,7 +36,6 @@ model Exercise {
   createdAt  DateTime            @default(now()) @db.Timestamptz(6)
   updatedAt  DateTime            @default(now()) @db.Timestamptz(6)
   deletedAt  DateTime?           @db.Timestamptz(6)
-  programID  Int
   programs   Program[]
 }
 
