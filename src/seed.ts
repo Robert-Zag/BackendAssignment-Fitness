@@ -10,32 +10,59 @@ const seedDB = async () => {
 		]
 	})
 
-	await prisma.exercise.createMany({
-		data: [{
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 1',
 			difficulty: ExerciseDifficulty.EASY,
-			programID: 1
-		}, {
+			programs: {
+				connect: [{ id: 1 }]
+			}
+		}
+	})
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 2',
 			difficulty: ExerciseDifficulty.EASY,
-			programID: 2
-		}, {
+			programs: {
+				connect: [{ id: 2 }]
+			}
+		}
+	})
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 3',
 			difficulty: ExerciseDifficulty.MEDIUM,
-			programID: 1
-		}, {
+			programs: {
+				connect: [{ id: 1 }]
+			}
+		}
+	})
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 4',
 			difficulty: ExerciseDifficulty.MEDIUM,
-			programID: 2
-		}, {
+			programs: {
+				connect: [{ id: 2 }]
+			}
+		}
+	})
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 5',
 			difficulty: ExerciseDifficulty.HARD,
-			programID: 1
-		}, {
+			programs: {
+				connect: [{ id: 1 }]
+			}
+		}
+	})
+	await prisma.exercise.create({
+		data: {
 			name: 'Exercise 6',
 			difficulty: ExerciseDifficulty.HARD,
-			programID: 2
-		}]
+			programs: {
+				connect: [{ id: 2 }]
+			}
+		}
 	})
 }
 
