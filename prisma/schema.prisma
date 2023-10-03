@@ -37,7 +37,7 @@ model Exercise {
   updatedAt  DateTime            @default(now()) @db.Timestamptz(6)
   deletedAt  DateTime?           @db.Timestamptz(6)
   programID  Int
-  programs   Program             @relation(fields: [programID], references: [id], onDelete: NoAction)
+  programs   Program[]
 }
 
 model Program {
