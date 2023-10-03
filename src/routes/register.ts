@@ -28,14 +28,14 @@ export default () => {
             parsedData = registrationSchema.parse(req.body)
         } catch (error) {
             return res.status(400).json({
-                message: "Invalid credentials",
+                message: "Validation error",
                 errors: error.errors
             })
         }
 
         const userWithEmail = await prisma.user.findUnique({ where: { email: parsedData.email } })
         if (userWithEmail) {
-            return res.status(400).json({
+            return res.status(409).json({
                 message: "Email already in use",
             })
         }
@@ -49,7 +49,7 @@ export default () => {
             }
         })
 
-        return res.json({
+        return res.status(201).json({
             user,
             message: "User registered successfully"
         })
