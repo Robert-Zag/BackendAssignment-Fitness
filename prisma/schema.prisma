@@ -27,6 +27,8 @@ model User {
   surname  String?
   nickName String?
   age      Int?
+
+  completedExercises CompletedExercise[]
 }
 
 model Exercise {
@@ -36,14 +38,28 @@ model Exercise {
   createdAt  DateTime            @default(now()) @db.Timestamptz(6)
   updatedAt  DateTime            @default(now()) @db.Timestamptz(6)
   deletedAt  DateTime?           @db.Timestamptz(6)
-  programs   Program[]
+
+  programs           Program[]
+  completedExercises CompletedExercise[]
 }
 
 model Program {
-  id        Int        @id @default(autoincrement())
-  name      String?    @db.VarChar(200)
-  createdAt DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime   @default(now()) @db.Timestamptz(6)
-  deletedAt DateTime?  @db.Timestamptz(6)
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(200)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime? @db.Timestamptz(6)
+
   exercises Exercise[]
+}
+
+model CompletedExercise {
+  id          Int      @id @default(autoincrement())
+  completedAt DateTime @default(now()) @db.Timestamptz(6)
+  duration    Int
+
+  userId     Int
+  exerciseId Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 }
