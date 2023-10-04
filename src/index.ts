@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
+import CompleteExerciseRouter from './routes/completeExercise'
 import AuthRouter from './routes/auth'
 import UsersRouter from './routes/users'
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
+app.use('/exercises/complete', CompleteExerciseRouter())
 app.use('/auth', AuthRouter())
 app.use('/users', UsersRouter())
 
