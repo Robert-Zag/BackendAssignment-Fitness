@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
 import AuthRouter from './routes/auth'
-
+import UsersRouter from './routes/users'
 
 dotenv.config()
 
@@ -20,6 +20,7 @@ app.use(express.json())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 app.use('/auth', AuthRouter())
+app.use('/users', UsersRouter())
 
 const httpServer = http.createServer(app)
 
