@@ -5,19 +5,11 @@ import {
     NextFunction
 } from 'express'
 import passport from 'passport';
-
-type AuthenticateCallbackError = Error & {
-    status?: number;
-};
-
-type AuthenticateCallbackUser = {
-    id: string;
-    role: UserRole;
-};
-
-type AuthenticateCallbackInfo = {
-    message: string;
-};
+import {
+    AuthenticateCallbackError,
+    AuthenticateCallbackInfo,
+    AuthenticateCallbackUser
+} from '../types/types';
 
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate(
