@@ -18,9 +18,63 @@ const updateSchema = z.object({
 	programs: z.array(z.number().int()).optional()
 })
 
+const querySchema = z.object({
+	page: z.number().int().min(1).optional(),
+	limit: z.number().int().min(1).optional(),
+	program: z.number().int().min(1).optional(),
+	search: z.string().optional()
+})
+
+type WhereQuery = {
+	programs?: { some: { id: number } },
+	name?: { contains: string }
+}
+
 export default () => {
-	router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
-		const exercises = await prisma.exercise.findMany({ include: { programs: true } })
+	router.get('/', async (req: Request, res: Response, _next: NextFunction) => {
+		const parsedPage = parseInt(req.query.page as string) || undefined
+		const parsedLimit = parseInt(req.query.limit as string) || undefined
+		const parsedProgram = parseInt(req.query.program as string) || undefined
+
+		let parsedData: z.infer<typeof querySchema>
+		try {
+			parsedData = querySchema.parse({
+				page: parsedPage,
+				limit: parsedLimit,
+				program: parsedProgram,
+				search: req.query.search
+			})
+		} catch (error) {
+			return res.status(400).json({
+				message: "Validation error",
+				errors: error.errors
+			})
+		}
+
+		let prismaWhereQuery: WhereQuery = {}
+
+		if (parsedData.program) {
+			prismaWhereQuery.programs = { some: { id: parsedData.program } }
+		}
+		if (parsedData.search) {
+			prismaWhereQuery.name = { contains: parsedData.search }
+		}
+
+		// only query with pagination if both limit and page are given		
+		let page, limit, skip
+		if (parsedData.page && parsedData.limit) {
+			page = parsedData.page
+			limit = parsedData.limit
+			skip = (page - 1) * limit
+		}
+
+
+		const exercises = await prisma.exercise.findMany({
+			where: prismaWhereQuery,
+			include: { programs: true },
+			skip: skip,
+			take: limit
+		})
 
 		return res.json({
 			data: exercises,
