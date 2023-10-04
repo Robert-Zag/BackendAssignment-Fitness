@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { isAdmin, isAuthenticated } from '../middleware/auth'
 import { ExerciseDifficulty } from '@prisma/client'
 import { AuthenticateCallbackUser } from '../types/types'
+import { localize } from '../lib/localization'
 
 const router: Router = Router()
 
@@ -31,7 +32,7 @@ export default () => {
 
         return res.json({
             data: completedExercises,
-            message: 'List of completed exercises'
+            message: localize(req.headers.language as string, 'List of completed exercises')
         })
     })
 
@@ -43,7 +44,7 @@ export default () => {
         const exerciseId = parseInt(req.params.exerciseId)
         if (isNaN(exerciseId)) {
             return res.status(400).json({
-                message: "Invalid exercise ID"
+                message: localize(req.headers.language as string, "Invalid exercise ID")
             })
         }
 
@@ -51,21 +52,21 @@ export default () => {
         if (!existingExercise) {
             return res.status(404).json({
                 id: exerciseId,
-                message: "Exercise not found"
+                message: localize(req.headers.language as string, "Exercise not found")
             })
         }
         const userId: number = parseInt(req.user.id)
         const duration: number = parseInt(req.body.duration)
         if (isNaN(duration)) {
             return res.status(400).json({
-                message: "Invalid duration"
+                message: localize(req.headers.language as string, "Invalid duration")
             })
         }
 
         const completedExercise = await prisma.completedExercise.create({ data: { duration, exerciseId, userId } })
         return res.json({
             data: completedExercise,
-            message: 'Exercise completion tracked'
+            message: localize(req.headers.language as string, 'Exercise completion tracked')
         })
     })
 
@@ -77,7 +78,7 @@ export default () => {
         const exerciseCompletionId = parseInt(req.params.exerciseCompletionId)
         if (isNaN(exerciseCompletionId)) {
             return res.status(400).json({
-                message: "Invalid exercise ID"
+                message: localize(req.headers.language as string, "Invalid exercise ID")
             })
         }
 
@@ -88,19 +89,19 @@ export default () => {
         if (!existingExerciseCompletion) {
             return res.status(404).json({
                 id: exerciseCompletionId,
-                message: "Exercise completion not found"
+                message: localize(req.headers.language as string, "Exercise completion not found")
             })
         }
 
         // check if exercise completion belongs to current user
         if (existingExerciseCompletion.userId !== userId) {
-            return res.status(403).json({ message: 'Unauthorized' })
+            return res.status(403).json({ message: localize(req.headers.language as string, 'Unauthorized') })
         }
 
         await prisma.completedExercise.delete({ where: { id: exerciseCompletionId } })
 
         return res.json({
-            message: 'Exercise completion deleted'
+            message: localize(req.headers.language as string, 'Exercise completion deleted')
         })
     })
 

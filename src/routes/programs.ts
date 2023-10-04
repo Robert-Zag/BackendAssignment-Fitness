@@ -6,15 +6,16 @@ import {
 } from 'express'
 import { prisma } from '../lib/prisma'
 import { isAdmin, isAuthenticated } from '../middleware/auth'
+import { localize } from '../lib/localization'
 
 const router: Router = Router()
 
 export default () => {
-	router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
+	router.get('/', async (req: Request, res: Response, _next: NextFunction) => {
 		const programs = await prisma.program.findMany()
 		return res.json({
 			data: programs,
-			message: 'List of programs'
+			message: localize(req.headers.language as string, 'List of programs')
 		})
 	})
 
@@ -23,12 +24,12 @@ export default () => {
 		const exerciseId = parseInt(req.params.exerciseId)
 		if (isNaN(programId)) {
 			return res.status(400).json({
-				message: "Invalid program ID"
+				message: localize(req.headers.language as string, "Invalid program ID")
 			})
 		}
 		if (isNaN(exerciseId)) {
 			return res.status(400).json({
-				message: "Invalid exercise ID"
+				message: localize(req.headers.language as string, "Invalid exercise ID")
 			})
 		}
 
@@ -36,14 +37,14 @@ export default () => {
 		if (!existingProgram) {
 			return res.status(404).json({
 				id: programId,
-				message: "Program not found"
+				message: localize(req.headers.language as string, "Program not found")
 			})
 		}
 
 		const exerciseIsInProgram = existingProgram.exercises.some(exercise => exercise.id === exerciseId)
 		if (!exerciseIsInProgram) {
 			return res.status(400).json({
-				message: 'Exercise not found on the given program'
+				message: localize(req.headers.language as string, 'Exercise not found on the given program')
 			});
 		}
 
@@ -58,7 +59,7 @@ export default () => {
 		})
 
 		return res.json({
-			message: 'Exercise removed from program'
+			message: localize(req.headers.language as string, 'Exercise removed from program')
 		})
 	})
 
@@ -67,12 +68,12 @@ export default () => {
 		const exerciseId = parseInt(req.params.exerciseId)
 		if (isNaN(programId)) {
 			return res.status(400).json({
-				message: "Invalid program ID"
+				message: localize(req.headers.language as string, "Invalid program ID")
 			})
 		}
 		if (isNaN(exerciseId)) {
 			return res.status(400).json({
-				message: "Invalid exercise ID"
+				message: localize(req.headers.language as string, "Invalid exercise ID")
 			})
 		}
 
@@ -80,14 +81,14 @@ export default () => {
 		if (!existingProgram) {
 			return res.status(404).json({
 				id: programId,
-				message: "Program not found"
+				message: localize(req.headers.language as string, "Program not found")
 			})
 		}
 
 		const exerciseIsInProgram = existingProgram.exercises.some(exercise => exercise.id === exerciseId)
 		if (exerciseIsInProgram) {
 			return res.status(400).json({
-				message: 'Exercise already on the given program'
+				message: localize(req.headers.language as string, 'Exercise already on the given program')
 			});
 		}
 
@@ -95,7 +96,7 @@ export default () => {
 		if (!existingExercise) {
 			return res.status(404).json({
 				id: exerciseId,
-				message: "Exercise not found"
+				message: localize(req.headers.language as string, "Exercise not found")
 			})
 		}
 
@@ -110,7 +111,7 @@ export default () => {
 		})
 
 		return res.json({
-			message: 'Exercise added to program'
+			message: localize(req.headers.language as string, 'Exercise added to program')
 		})
 	})
 

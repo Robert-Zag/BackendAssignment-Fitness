@@ -10,6 +10,7 @@ import {
     AuthenticateCallbackInfo,
     AuthenticateCallbackUser
 } from '../types/types';
+import { localize } from '../lib/localization';
 
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate(
@@ -21,7 +22,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
             _info?: AuthenticateCallbackInfo
         ) => {
             if (err) { return next(err) }
-            if (!user) { return res.status(401).json({ message: 'User is not authenticated' }) }
+            if (!user) { return res.status(401).json({ message: localize(req.headers.language as string, 'User is not authenticated') }) }
             req.user = user
             next()
         })(req, res, next)
@@ -35,6 +36,6 @@ export const isAdmin = (
     if (req.user && req.user.role === UserRole.ADMIN) {
         next()
     } else {
-        return res.status(403).json({ message: 'Unauthorized' });
+        return res.status(403).json({ message: localize(req.headers.language as string, 'Unauthorized') });
     }
 };

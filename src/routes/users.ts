@@ -9,6 +9,7 @@ import { prisma } from '../lib/prisma'
 import { isAdmin, isAuthenticated } from '../middleware/auth'
 import { AuthenticateCallbackUser } from '../types/types'
 import { UserRole } from '@prisma/client'
+import { localize } from '../lib/localization'
 
 const router: Router = Router()
 
@@ -30,14 +31,14 @@ export default () => {
         if (req.user && req.user.role === UserRole.ADMIN) {
             return res.json({
                 data: allUsers,
-                message: 'List of all users'
+                message: localize(req.headers.language as string, 'List of all users')
             })
         } else if (req.user && req.user.role === UserRole.USER) {
             //regular users can only see all the ids and nicknames
             const redactedUsers = allUsers.map((fullUser) => { return { id: fullUser.id, nickName: fullUser.nickName } })
             return res.json({
                 data: redactedUsers,
-                message: 'List of all users'
+                message: localize(req.headers.language as string, 'List of all users')
             })
         }
     })
@@ -50,7 +51,7 @@ export default () => {
         const id = parseInt(req.params.id)
         if (isNaN(id)) {
             return res.status(400).json({
-                message: "Invalid user ID"
+                message: localize(req.headers.language as string, "Invalid user ID")
             })
         }
         if (req.user && req.user.role === UserRole.ADMIN) {
@@ -58,22 +59,22 @@ export default () => {
             if (!existingUser) {
                 return res.status(404).json({
                     id,
-                    message: "User not found"
+                    message: localize(req.headers.language as string, "User not found")
                 })
             }
             return res.json({
                 data: existingUser,
-                message: 'User detail'
+                message: localize(req.headers.language as string, 'User detail')
             })
         } else if (req.user && req.user.role === UserRole.USER) {
             // regular users can only access their own profile
             if (req.user.id !== req.params.id) {
-                return res.status(403).json({ message: 'Unauthorized' })
+                return res.status(403).json({ message: localize(req.headers.language as string, 'Unauthorized') })
             }
             const userProfile = prisma.user.findUnique({ where: { id: parseInt(req.user.id) } })
             return res.json({
                 data: userProfile,
-                message: 'User profile'
+                message: localize(req.headers.language as string, 'User profile')
             })
         }
     })
@@ -82,7 +83,7 @@ export default () => {
         const id = parseInt(req.params.id)
         if (isNaN(id)) {
             return res.status(400).json({
-                message: "Invalid user ID"
+                message: localize(req.headers.language as string, "Invalid user ID")
             })
         }
 
@@ -90,7 +91,7 @@ export default () => {
         if (!existingUser) {
             return res.status(404).json({
                 id,
-                message: "User not found"
+                message: localize(req.headers.language as string, "User not found")
             })
         }
 
@@ -99,7 +100,7 @@ export default () => {
             parsedData = updateSchema.parse(req.body)
         } catch (error) {
             return res.status(400).json({
-                message: "Validation error",
+                message: localize(req.headers.language as string, "Validation error"),
                 errors: error.errors
             })
         }
@@ -111,7 +112,7 @@ export default () => {
 
         return res.json({
             user,
-            message: 'User updated'
+            message: localize(req.headers.language as string, 'User updated')
         });
 
     })

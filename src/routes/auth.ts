@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { hash } from 'bcrypt'
 import { compare } from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { localize } from '../lib/localization'
 
 const router: Router = Router()
 
@@ -35,7 +36,7 @@ export default () => {
             parsedData = registrationSchema.parse(req.body)
         } catch (error) {
             return res.status(400).json({
-                message: "Validation error",
+                message: localize(req.headers.language as string, "Validation error"),
                 errors: error.errors
             })
         }
@@ -43,7 +44,7 @@ export default () => {
         const userWithEmail = await prisma.user.findUnique({ where: { email: parsedData.email } })
         if (userWithEmail) {
             return res.status(409).json({
-                message: "Email already in use",
+                message: localize(req.headers.language as string, "Email already in use"),
             })
         }
 
@@ -58,7 +59,7 @@ export default () => {
 
         return res.status(201).json({
             user,
-            message: "User registered successfully"
+            message: localize(req.headers.language as string, "User registered successfully")
         })
     })
 
@@ -68,7 +69,7 @@ export default () => {
             parsedData = loginSchema.parse(req.body)
         } catch (error) {
             return res.status(400).json({
-                message: "Validation error",
+                message: localize(req.headers.language as string, "Validation error"),
                 errors: error.errors
             })
         }
@@ -78,12 +79,12 @@ export default () => {
         if (!isPasswordValid) {
             return res.status(401).json({
                 // generic error message for better security
-                message: "Invalid credentials",
+                message: localize(req.headers.language as string, "Invalid credentials"),
             })
         }
 
         const token = jwt.sign({ id: userWithEmail.id }, process.env.JWT_SECRET, { expiresIn: '1h' })
-        return res.json({ token, message: "Logged in successfully" });
+        return res.json({ token, message: localize(req.headers.language as string, "Logged in successfully") });
     })
 
     return router

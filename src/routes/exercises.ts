@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma'
 import { z } from 'zod'
 import { isAdmin, isAuthenticated } from '../middleware/auth'
 import { ExerciseDifficulty } from '@prisma/client'
+import { localize } from '../lib/localization'
 
 const router: Router = Router()
 
@@ -46,7 +47,7 @@ export default () => {
 			})
 		} catch (error) {
 			return res.status(400).json({
-				message: "Validation error",
+				message: localize(req.headers.language as string, "Validation error"),
 				errors: error.errors
 			})
 		}
@@ -78,7 +79,7 @@ export default () => {
 
 		return res.json({
 			data: exercises,
-			message: 'List of exercises'
+			message: localize(req.headers.language as string, 'List of exercises')
 		})
 	})
 
@@ -88,7 +89,7 @@ export default () => {
 			parsedData = createSchema.parse(req.body)
 		} catch (error) {
 			return res.status(400).json({
-				message: "Validation error",
+				message: localize(req.headers.language as string, "Validation error"),
 				errors: error.errors
 			})
 		}
@@ -99,7 +100,7 @@ export default () => {
 				if (!existingProgram) {
 					return res.status(404).json({
 						id,
-						message: "Program not found"
+						message: localize(req.headers.language as string, "Program not found")
 					})
 				}
 			}
@@ -117,7 +118,7 @@ export default () => {
 
 		return res.status(201).json({
 			exercise,
-			message: 'Exercise created'
+			message: localize(req.headers.language as string, 'Exercise created')
 		})
 	})
 
@@ -125,7 +126,7 @@ export default () => {
 		const id = parseInt(req.params.id)
 		if (isNaN(id)) {
 			return res.status(400).json({
-				message: "Invalid exercise ID"
+				message: localize(req.headers.language as string, "Invalid exercise ID")
 			})
 		}
 
@@ -137,7 +138,7 @@ export default () => {
 		if (!existingExercise) {
 			return res.status(404).json({
 				id,
-				message: "Exercise not found"
+				message: localize(req.headers.language as string, "Exercise not found")
 			})
 		}
 
@@ -146,7 +147,7 @@ export default () => {
 			parsedData = updateSchema.parse(req.body)
 		} catch (error) {
 			return res.status(400).json({
-				message: "Validation error",
+				message: localize(req.headers.language as string, "Validation error"),
 				errors: error.errors
 			})
 		}
@@ -157,7 +158,7 @@ export default () => {
 				if (!existingProgram) {
 					return res.status(404).json({
 						id,
-						message: "Program not found"
+						message: localize(req.headers.language as string, "Program not found")
 					})
 				}
 			}
@@ -191,7 +192,7 @@ export default () => {
 
 			return res.json({
 				exercise: results[1],
-				message: 'Exercise updated'
+				message: localize(req.headers.language as string, 'Exercise updated')
 			})
 			// if no programs property is passed in request body, update the other properties only 
 		} else {
@@ -205,7 +206,7 @@ export default () => {
 
 			return res.json({
 				exercise,
-				message: 'Exercise updated'
+				message: localize(req.headers.language as string, 'Exercise updated')
 			});
 		}
 	})
@@ -214,7 +215,7 @@ export default () => {
 		const id = parseInt(req.params.id)
 		if (isNaN(id)) {
 			return res.status(400).json({
-				message: "Invalid exercise ID"
+				message: localize(req.headers.language as string, "Invalid exercise ID")
 			})
 		}
 
@@ -222,7 +223,7 @@ export default () => {
 		if (!existingExercise) {
 			return res.status(404).json({
 				id,
-				message: "Exercise not found"
+				message: localize(req.headers.language as string, "Exercise not found")
 			})
 		}
 
@@ -230,7 +231,7 @@ export default () => {
 
 		return res.json({
 			id,
-			message: 'Exercise deleted'
+			message: localize(req.headers.language as string, 'Exercise deleted')
 		})
 	})
 
